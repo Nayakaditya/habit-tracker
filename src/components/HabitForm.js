@@ -30,14 +30,10 @@ export default function HabitForm() {
       setTimeout(() => {
         setShowPatternNotification(false);
       }, 5000);
-      setTitle("");
-      setGoal("");
       return;
     } else if (isDuplicate) {
       setShowDuplicateNotification(true);
       setTimeout(() => setShowDuplicateNotification(false), 2000);
-      setTitle("");
-      setGoal("");
       return;
     } else {
       setTitle("");

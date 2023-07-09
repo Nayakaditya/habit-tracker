@@ -2,10 +2,27 @@ import React from "react";
 import Habit from "./Habit";
 import { day, date } from "../utils/Days";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import db from "../configs/firebase";
 
 export default function HabitList() {
-  const habits = useSelector((state) => state.habit.habits);
+  const [habits, setHabits] = useState([]);
+
+  useEffect(() => {
+    const fetchHabits = async () => {
+      try {
+        const habitsRef = collection(db, "habits");
+        const snapshot = await getDocs(habitsRef);
+        const habitData = snapshot.docs.map((doc) => doc.data());
+        setHabits(habitData.sort());
+      } catch (error) {
+        console.log("error in fetching data : ", error);
+      }
+    };
+
+    fetchHabits();
+  }, []);
 
   return (
     <>
