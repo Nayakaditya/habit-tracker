@@ -1,17 +1,28 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { updateHabitStatus } from "../actions/habitActions";
+import { useDispatch } from "react-redux";
 
 const Habit = ({ habit }) => {
   const [habitState, setHabitState] = useState(habit);
+  const dispatch = useDispatch();
 
   const handleClick = () => {
+    let updatedStatus;
+
     if (habitState.status === "none") {
-      setHabitState({ ...habitState, status: "done" });
+      updatedStatus = "done";
     } else if (habitState.status === "done") {
-      setHabitState({ ...habitState, status: "not-done" });
+      updatedStatus = "not-done";
     } else if (habitState.status === "not-done") {
-      setHabitState({ ...habitState, status: "none" });
+      updatedStatus = "none";
     }
+
+    // Dispatch the action to update habit status in Redux store and Firebase
+    dispatch(updateHabitStatus(habitState.id, updatedStatus));
+
+    // Update the habit status in local state
+    setHabitState({ ...habitState, status: updatedStatus });
   };
 
   let divClass =
@@ -25,7 +36,9 @@ const Habit = ({ habit }) => {
 
   return (
     <div className="bg-violet-300 w-36 h-36 flex items-center justify-between px-2 rounded-md md:w-full">
-      <Link to={`/habit/${habitState.title}`}>
+      <Link to={`/habit/${habitState.id}`}>
+        {" "}
+        {/* Change the link to use habitState.id */}
         <div className="flex flex-col md:flex-row md:space-x-10 cursor-pointer">
           <div>
             <img

@@ -1,4 +1,4 @@
-import { ADD_HABIT } from "../constants/actionTypes";
+import { ADD_HABIT, UPDATE_HABIT_STATUS } from "../constants/actionTypes";
 
 const initialState = {
   habits: [],
@@ -21,6 +21,22 @@ const habitsReducer = (state = initialState, { type, payload }) => {
         ],
       };
 
+    case UPDATE_HABIT_STATUS:
+      const { id, status } = payload;
+      const updatedHabits = state.habits.map((habit) => {
+        if (habit.id === id) {
+          return {
+            ...habit,
+            status,
+          };
+        }
+        return habit;
+      });
+
+      return {
+        ...state,
+        habits: updatedHabits,
+      };
     default:
       return state;
   }

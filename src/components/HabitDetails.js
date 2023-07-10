@@ -1,17 +1,42 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { format, addDays, isSameDay } from "date-fns";
+import { doc, getDoc } from "firebase/firestore";
+import db from "../configs/firebase";
 
 const HabitDetails = () => {
-  const { title } = useParams();
-  const habits = useSelector((state) => state.habit.habits);
-  const habit = habits.find((habit) => habit.title === title);
+  const { id } = useParams();
+  const [habitData, setHabitData] = useState(null); // State to store the habit data
 
-  if (!habit) {
+  useEffect(() => {
+    const fetchHabitData = async () => {
+      // Create a reference to the habit document with the matching ID
+      const habitRef = doc(db, "habits", id);
+
+      try {
+        // Get the habit document
+        const habitDoc = await getDoc(habitRef);
+
+        if (habitDoc.exists()) {
+          const habitData = habitDoc.data();
+          // Set the habit data in the state
+          setHabitData(habitData);
+        } else {
+          // If the document doesn't exist, handle the error
+          console.log("Habit not found");
+        }
+      } catch (error) {
+        console.error("Error fetching habit:", error);
+      }
+    };
+
+    fetchHabitData();
+  }, [id]);
+
+  if (!habitData) {
     return (
       <div className="flex justify-center items-center h-screen text-white text-3xl">
-        Habit not found
+        Habit Not Found
       </div>
     );
   }
@@ -26,8 +51,12 @@ const HabitDetails = () => {
   return (
     <div className="mt-5">
       <div className="flex justify-center items-center gap-5">
-        <h1 className="text-white text-3xl">{habit.title}</h1>
-        <img width={50} src={habit.logo} alt={habit.title.toLowerCase()} />
+        <h1 className="text-white text-3xl">{habitData.title}</h1>
+        <img
+          width={50}
+          src={habitData.logo}
+          alt={habitData.title.toLowerCase()}
+        />
       </div>
       <div className="mt-5 flex justify-center items-center gap-5">
         <div>
@@ -36,7 +65,7 @@ const HabitDetails = () => {
             {calendarDates.map((date) => {
               const formattedDate = format(date, "d");
               const isCompleted = isSameDay(date, currentDate);
-              const status = isCompleted ? habit.status : "none";
+              const status = isCompleted ? habitData.status : "none";
 
               return (
                 <div

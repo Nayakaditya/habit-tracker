@@ -512,3 +512,27 @@ store.js
     //   logo: "https://cdn-icons-png.flaticon.com/512/2436/2436882.png",
     //   status: "done",
     // },
+
+
+
+
+
+
+
+
+
+
+     const [habit, setHabit] = useState("");
+
+  useEffect(() => {
+    const fetchHabit = async () => {
+      try {
+        const habitRef = doc(db, "habits");
+        const habitSnap = await getDoc(habitRef);
+        setHabit(habitSnap.data());
+      } catch (error) {
+        console.log("Error in finding single habit: ", error);
+      }
+    };
+    fetchHabit();
+  }, []);

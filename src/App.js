@@ -14,7 +14,7 @@ function App() {
       children: [
         { index: true, element: <Home /> },
         { path: "add", element: <HabitForm /> },
-        { path: "habit/:title", element: <HabitDetails /> },
+        { path: "habit/:id", element: <HabitDetails /> },
       ],
     },
   ]);

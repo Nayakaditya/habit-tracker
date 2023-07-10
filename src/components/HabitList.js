@@ -15,7 +15,7 @@ export default function HabitList() {
         const habitsRef = collection(db, "habits");
         const snapshot = await getDocs(habitsRef);
         const habitData = snapshot.docs.map((doc) => doc.data());
-        setHabits(habitData.sort());
+        setHabits(habitData);
       } catch (error) {
         console.log("error in fetching data : ", error);
       }
@@ -45,7 +45,7 @@ export default function HabitList() {
           </div>
           <div className="habit-container grid grid-cols-2 gap-16 mb-20 md:grid-cols-1 md:w-full md:gap-8 xmd:gap-6">
             {habits.map((habit, i) => (
-              <Habit key={i} habit={habit} />
+              <Habit habit={habit} />
             ))}
           </div>
         </div>
